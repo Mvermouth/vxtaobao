@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+</head>
+<style type="text/css">
+	body{
+		background:#ecfbf3;
+	}
+	.beatWord {
+	    text-align: center;
+	}
+	.beatWord fieldset legend {
+	    background: #f54d23;
+	    border: none;
+	    font-size: 0.8rem;
+	    line-height: 20px;
+	    color: #fff;
+	    padding: 0 4px;
+	}
+	.beatWord fieldset {
+	    padding: 0.8em;
+	    margin: 0 2px;
+	    border: 1px dashed #f54d23;
+	    background: #fff;
+	}
+	.beatWord button {
+	    border: none;
+	    font-size: 16px;
+	    padding: 6px 15px;
+	    background: #f60;
+	    display: inline-block;
+	    margin: 10px auto;
+	    border-radius: 16px;
+	    color: #fff;
+	}
+	.beatMain{
+		position: relative;
+	    z-index: 2;
+	    padding: 0 16px;
+	}
+	.beatMain .imgContainer img {
+	    width: 100%;
+	    height: auto;
+	    box-shadow: 0px 3px 12px rgba(21, 0, 71, 0.16);
+	}
+
+	.beatMain .itemContent {
+	    font-size: 14px;
+	    color: rgba(0, 0, 0, 0.80);
+	    line-height: 21px;
+	    text-align: left;
+	    margin-bottom: 10px;
+	}
+
+
+	img, object, video, embed {
+	    max-width: 100%;
+	    vertical-align: middle;
+	    -moz-box-sizing: border-box;
+	    box-sizing: border-box;
+	}
+	.v {
+		font-weight: inherit;
+	    font-style: inherit;
+	    font-size: 100%;
+	    font-family: "微软雅黑","微软雅黑","Microsoft YaHei",Helvetica,Tahoma,sans-serif;
+	    vertical-align: baseline;
+	}
+	.ov{
+		background-color: rgb(158, 210, 158) !important; 
+		border-color: rgb(158, 210, 158) !important;
+	}
+</style>
+<body>
+	<div class="beatMain">
+		<div class="imgContainer">
+			<img id="img" src="" alt="">
+		</div>
+		<p class="itemContent"></p>
+	</div>
+	<div class="beatWord">
+		<fieldset id="oneFieldset">
+	       <!--  <legend id="copy_tip">长按框内 &gt; 拷贝 &gt; 打开手淘</legend> -->
+		    <p id="itemWord" class="itemWord v" style="font-size: 12px;">复制框内整段文字，打开「手淘」即可「领取优惠券」并购买<span id="taokey"></span>
+		    </p>
+	    </fieldset>
+	    <button class="itemCopy v" id="copyId" data-clipboard-text="">
+			一键复制
+		</button>
+
+		<fieldset id="secFieldset">
+<!--             <legend style="background: red; border: none; font-size: 0.9em; line-height: 20px; color: #FFF; padding: 0px 4px; text-align: center;">淘宝红包注意事项</legend> -->
+
+            <div style="font-size:14px; margin:3px; padding-left:3%;line-height:25px; color=&quot;red&quot;">
+                <font color="red" size="4">①使用红包可能会导致没返利</font>
+                （如果返利大于您抵扣的红包，当然选省钱多的啦
+                <br>
+
+
+                <div class="beatMain">
+                    <div align="center" class="imgContaine">
+                        <img src="https://img.alicdn.com/imgextra/i4/676558691/O1CN012E4WgQvGvDUySCf_!!676558691.png" height="100%">
+                    </div>
+                </div>
+                <font color="red">②多件商品分别查询分别加入购物车一起结算。</font>
+                <br>③红包尽量给没有返利的商品使用。
+                <br>④如果没有收到付费成功手动发送订单号
+                <br>
+            </div>
+        </fieldset>
+
+	</div>
+
+	<script type="text/javascript" src="./dist/clipboard.min.js"></script>
+	<script type="text/javascript" src="./dist/base64.js"></script>
+	<script type="text/javascript">
+		window.onload = function(){
+			var clipboard = new ClipboardJS('.itemCopy');
+			clipboard.on('success', function(e) {
+				e.trigger.innerHTML = "复制成功，打开淘宝会自动弹出口令";
+				e.trigger.className = "itemCopy v ov";
+				e.trigger.disabled = true;
+			    reset(e.trigger);
+			});
+
+			function reset(dom){
+				setTimeout(function(){
+					dom.innerHTML = "一键复制";
+					dom.className = "itemCopy v";
+					dom.disabled = false;
+				}, 3000);
+			}
+			function parseQueryString (url) {
+			   var jsonList={};
+			   if(url.indexOf("?")>-1){
+				   var str=url.slice(url.indexOf("?")+1);
+				   var strs=str.split("&");
+				   for(var i=0;i<strs.length;i++){
+				  	   jsonList[strs[i].split("=")[0]]=strs[i].split("=")[1];
+			       }
+		       }
+       			return jsonList;
+			}
+			var jsonList = parseQueryString(location.href);
+			document.getElementById("img").src = jsonList.image ? Base64.decode(jsonList.image) : "";
+			document.getElementById("taokey").innerHTML = jsonList.word ? Base64.decode(jsonList.word) : "";
+			document.getElementById("copyId").setAttribute("data-clipboard-text",Base64.decode(jsonList.word));
+
+			var oneFieldset = document.getElementById("oneFieldset");
+			var secFieldset = document.getElementById("secFieldset");
+			var oneL = document.createElement("legend");
+			oneL.innerHTML = "长按框内 &gt; 拷贝 &gt; 打开手淘";
+			var twoL = document.createElement("legend");
+			twoL.innerHTML = "淘宝红包注意事项";
+			oneFieldset.appendChild(oneL);
+			secFieldset.appendChild(twoL);
+			//document.getElementsByClassName("page-w ")[0].style.height = innerHeight + "px"
+			document.addEventListener("selectionchange",
+			function(e) {
+				window.getSelection().selectAllChildren(document.querySelector('.itemWord'));
+			},
+			false);
+		}
+
+	</script>
+</body>
+</html>
